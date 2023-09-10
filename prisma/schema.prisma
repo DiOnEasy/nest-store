@@ -103,6 +103,8 @@ model OrderItem {
 
   order   Order @relation(fields: [orderId], references: [id])
   orderId Int   @map("order_id")
+
+  @@map("Order_item")
 }
 
 enum EnumOrderStatus {
