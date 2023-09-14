@@ -6,8 +6,8 @@ import { generateSlug } from 'src/utils/generate-slug'
 import { EnumProductSort, getAllProductDto } from './dto/get-all-products.dto'
 import { ProductDto } from './dto/product.dto'
 import {
-    productReturnObjectFullest,
-    returnProductObject
+	productReturnObjectFullest,
+	returnProductObject
 } from './return-product.object'
 
 @Injectable()
@@ -100,6 +100,49 @@ export class ProductService {
 			prismaSort.push({ createdAt: 'asc' })
 		} else {
 			prismaSort.push({ createdAt: 'desc' })
+		}
+
+		const prismaSearchTermFilter: Prisma.ProductWhereInput = searchTerm
+			? {
+					OR: [
+						{
+							category: {
+								name: {
+									contains: searchTerm,
+									mode: 'insensitive'
+								}
+							}
+						},
+						{
+							name: {
+								contains: searchTerm,
+								mode: 'insensitive'
+							}
+						},
+						{
+							description: {
+								contains: searchTerm,
+								mode: 'insensitive'
+							}
+						}
+					]
+			  }
+			: {}
+
+		const { perPage, skip } = this.paginationService.getPagination(dto)
+
+		const products = await this.prisma.product.findMany({
+			where: prismaSearchTermFilter,
+			orderBy: prismaSort,
+			skip,
+			take: perPage
+		})
+
+		return {
+			products,
+			length: await this.prisma.product.count({
+				where: prismaSearchTermFilter
+			})
 		}
 	}
 
