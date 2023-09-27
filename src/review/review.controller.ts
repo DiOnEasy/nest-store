@@ -1,12 +1,12 @@
 import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  Param,
-  Post,
-  UsePipes,
-  ValidationPipe
+	Body,
+	Controller,
+	Get,
+	HttpCode,
+	Param,
+	Post,
+	UsePipes,
+	ValidationPipe
 } from '@nestjs/common'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { CurrentUser } from 'src/auth/decorators/user.decorator'
@@ -33,5 +33,10 @@ export class ReviewController {
 		@Param('productId') productId: string
 	) {
 		return this.reviewService.createReview(id, dto, +productId)
+	}
+
+	@Get('average-by-product/:productId')
+	async getAverageByProduct(@Param('productId') productId: string) {
+		return this.reviewService.getAverageValueByProductId(+productId)
 	}
 }

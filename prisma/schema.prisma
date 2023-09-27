@@ -39,9 +39,7 @@ model Product {
   description String
   price       Int
   images      String[]
-  // category Category
-  // categoryId Int @map("category_id")
-  // reviews Review[]
+  
   orderItems  OrderItem[]
   reviews     Review[]
   category    Category?   @relation(fields: [categoryId], references: [id])
