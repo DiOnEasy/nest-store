@@ -1,15 +1,15 @@
+import { faker } from '@faker-js/faker'
 import {
 	BadRequestException,
 	Injectable,
 	NotFoundException,
 	UnauthorizedException
 } from '@nestjs/common'
-import { PrismaService } from 'src/prisma.service'
-import { AuthDto } from './dto/auth.dto'
-import { faker } from '@faker-js/faker'
-import { hash, verify } from 'argon2'
 import { JwtService } from '@nestjs/jwt'
 import { User } from '@prisma/client'
+import { hash, verify } from 'argon2'
+import { PrismaService } from 'src/prisma.service'
+import { AuthDto } from './dto/auth.dto'
 
 @Injectable()
 export class AuthService {
@@ -85,7 +85,8 @@ export class AuthService {
 	private returnUserFields(user: User) {
 		return {
 			id: user.id,
-			email: user.email
+			email: user.email,
+			avatarPath: user.avatarPath
 		}
 	}
 
