@@ -88,6 +88,7 @@ export class ProductService {
 	async getAllProduct(dto: getAllProductDto = {}) {
 		const { sort, searchTerm } = dto
 
+
 		const prismaSort: Prisma.ProductOrderByWithRelationInput[] = []
 
 		if (sort === EnumProductSort.LOW_PRICE) {
@@ -103,7 +104,7 @@ export class ProductService {
 		}
 
 		const prismaSearchTermFilter: Prisma.ProductWhereInput = searchTerm
-			? {
+			?  {
 					OR: [
 						{
 							category: {
@@ -138,7 +139,6 @@ export class ProductService {
 			take: perPage,
 			select: returnProductObject
 		})
-
 		return {
 			products,
 			length: await this.prisma.product.count({

@@ -1,11 +1,13 @@
 import { faker } from '@faker-js/faker'
 import { PrismaClient, Product } from '@prisma/client'
 import * as dotenv from 'dotenv'
-import { getRandomNumber } from '../src/utils/random-number'
 import { generateSlug } from '../src/utils/generate-slug'
+import { getRandomNumber } from '../src/utils/random-number'
 
 dotenv.config()
 const prisma = new PrismaClient()
+
+
 
 const createProducts = async (quantity: number) => {
 	const products: Product[] = []
@@ -13,25 +15,30 @@ const createProducts = async (quantity: number) => {
 		const productName = faker.commerce.productName()
 		const categoryName = faker.commerce.department()
 
+		console.log(productName, categoryName)
+
 		const product = await prisma.product.create({
 			data: {
 				name: productName,
 				slug: generateSlug(productName),
 				description: faker.commerce.productDescription(),
-				price: +faker.commerce.price(10, 999, 0),
+				price: +faker.commerce.price({ min: 10, max: 999, dec: 0 }),
 				images: Array.from({ length: getRandomNumber(2, 6) }).map(() =>
-					faker.image.imageUrl(),
+					faker.image.url(),
 				),
 				category: {
 					create: {
 						name: categoryName,
 						slug: generateSlug(categoryName)
 					}
+					// connect: {
+					// 	id: getRandomNumber(2, 6)
+					// }
 				},
 				reviews: {
 					create: [
 						{
-							rating: faker.datatype.number({ min: 1, max: 5 }),
+							rating: faker.number.int({ min: 1, max: 5 }),
 							text: faker.lorem.paragraph(),
 							user: {
 								connect: {
@@ -40,19 +47,19 @@ const createProducts = async (quantity: number) => {
 							}
 						},
 						{
-							rating: faker.datatype.number({ min: 1, max: 5 }),
+							rating: faker.number.int({ min: 1, max: 5 }),
 							text: faker.lorem.paragraph(),
 							user: {
 								connect: {
 									id: 2
 								}
-							} 
+							}
 						}
 					]
 				}
 			}
 		})
-        products.push(product)
+		products.push(product)
 	}
 	console.log(`Added to database ${products.length} products`)
 }

@@ -1,18 +1,19 @@
 import {
+	Body,
 	Controller,
-	Param,
 	Get,
 	HttpCode,
-	UsePipes,
-	ValidationPipe,
-	Put,
+	Param,
 	Patch,
-	Body
+	Post,
+	Put,
+	UsePipes,
+	ValidationPipe
 } from '@nestjs/common'
-import { UserService } from './user.service'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { CurrentUser } from 'src/auth/decorators/user.decorator'
 import { UserDto } from './dto/user.dto'
+import { UserService } from './user.service'
 
 @Controller('users')
 export class UserController {
@@ -30,6 +31,16 @@ export class UserController {
 	@Put('profile')
 	async updateProfile(@Body() dto: UserDto, @CurrentUser('id') id: number) {
 		return this.userService.updateProfile(id, dto)
+	}
+
+	@Post('test')
+	async test(@Body() dto: any) {
+		console.log(dto)
+		if (dto.data == 'claus') {
+			return { code: 200 }
+		} else {
+			return { code: 400 }
+		}
 	}
 
 	@Auth()
