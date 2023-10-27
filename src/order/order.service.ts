@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { EnumOrderStatus } from '@prisma/client'
 import axios from 'axios'
 import { PrismaService } from 'src/prisma.service'
 import { returnProductObject } from 'src/product/return-product.object'
@@ -56,7 +57,7 @@ export class OrderService {
 			amount: total * 100,
 			merchant_id: '1396424',
 			response_url:
-				'http://m4evpj-ip-91-214-137-122.tunnelmole.net/api/orders/status'
+				'http://nnspnb-ip-194-24-236-75.tunnelmole.net/api/orders/status'
 		}
 
 		const fondyPassword = 'test'
@@ -91,20 +92,15 @@ export class OrderService {
 	}
 
 	async updateStatus(dto: PaymentStatusDto) {
-		console.log(dto)
-		const orderId = BigInt(parseInt(dto.order_id))
-		const orderPrisma = this.prisma.order.findUnique({
+		const orderId = Number(dto.order_id.split('pknsi')[1])
+		console.log(orderId)
+	
+		const status = await this.prisma.order.update({
 			where: {
-				id: 36
-			}
-		})
-		console.log((await orderPrisma).orderFondyId === orderId)
-		const status = this.prisma.order.update({
-			where: {
-				orderFondyId: orderId
+				id: orderId
 			},
 			data: {
-				status: 'PAYED'
+				status: EnumOrderStatus.PAYED
 			}
 		})
 		return true
